@@ -20,8 +20,8 @@ jobs:
         run: |
           echo "Concatenating labels..."
           LABELS=""
-          for label in ${{ toJson(github.event.pull_request.labels) }}; do
-            LABELS+=$(echo $label | jq -r '.name')","
+          for label in $(echo '${{ toJson(github.event.pull_request.labels) }}' | jq -r '.[].name'); do
+            LABELS+="$label,"
           done
           LABELS=$(echo $LABELS | sed 's/,$//')
           echo $LABELS
