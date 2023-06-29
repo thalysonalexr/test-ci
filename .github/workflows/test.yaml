@@ -1,0 +1,27 @@
+name: test-ci
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    types: [closed]
+
+jobs:
+  test-ci:
+    name: Test ci
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install jq
+        run: |
+          sudo apt-get install -y jq
+
+      - name: Save labels
+        run: |
+          echo "Concatenating labels..."
+          LABELS=""
+          for label in ${{ toJson(github.event.pull_request.labels) }}; do
+            LABELS+=$(echo $label | jq -r '.name')","
+          done
+          LABELS=$(echo $LABELS | sed 's/,$//')
+          echo $LABELS
